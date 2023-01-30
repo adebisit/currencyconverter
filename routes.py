@@ -7,6 +7,7 @@ import requests
 from lxml import html
 from datetime import datetime
 from pytz import timezone
+import database
 
 
 router = APIRouter()
@@ -40,11 +41,13 @@ async def convert(
             "to_currency": to_currency
         }
     }
-    request.app.database["conversions"].insert_one(jsonable_encoder(response))
+    # request.app.database["conversions"].insert_one(jsonable_encoder(response))
+    database.db["conversions"].insert_one(jsonable_encoder(response))
     return response
 
 
 @router.get("/history")
 async def history(request: Request) -> List[Conversion]:
-    conversions = list(request.app.database["conversions"].find())
+    # conversions = list(request.app.database["conversions"].find())
+    conversions = list(database.db["conversions"].find())
     return conversions
